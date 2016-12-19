@@ -6,12 +6,17 @@ package protocol;
  */
 class Command {
     private final int issuer;
-    private final int CmdID;
+    private final int cmdID;
     private final String operation;
 
     public Command(int issuer, int cmdID, String operation) {
         this.issuer = issuer;
-        CmdID = cmdID;
+        this.cmdID = cmdID;
         this.operation = operation;
+    }
+
+    @Override
+    public String toString() {
+        return "" + issuer + " " + cmdID + " " + operation;
     }
 }

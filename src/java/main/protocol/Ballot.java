@@ -23,4 +23,9 @@ class Ballot implements Comparable<Ballot>{
         String his = o.prefix + o.conductor;
         return mine.compareTo(his);
     }
+
+    @Override
+    public String toString() {
+        return prefix + " " + conductor;
+    }
 }

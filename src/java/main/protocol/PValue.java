@@ -14,4 +14,9 @@ class PValue {
         this.slotNumber = slotNumber;
         this.command = command;
     }
+
+    @Override
+    public String toString() {
+        return "" + ballot + " " + slotNumber + " " + command;
+    }
 }
