@@ -1,4 +1,4 @@
-package protocol;
+package paxos;
 
 /**
  * Created by yifan on 12/17/16.
