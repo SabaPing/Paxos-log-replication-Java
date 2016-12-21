@@ -133,7 +133,7 @@ public final class PaxosMsgs {
   }
   /**
    * <pre>
-   *wrapper. Add a protocol header to message
+   *wrapper. Add a protocol header to every message
    * </pre>
    *
    * Protobuf type {@code paxos.Paxos}
@@ -327,9 +327,9 @@ public final class PaxosMsgs {
        */
       P1A(1),
       /**
-       * <code>P1b = 2;</code>
+       * <code>P1B = 2;</code>
        */
-      P1b(2),
+      P1B(2),
       /**
        * <code>P2A = 3;</code>
        */
@@ -361,9 +361,9 @@ public final class PaxosMsgs {
        */
       public static final int P1A_VALUE = 1;
       /**
-       * <code>P1b = 2;</code>
+       * <code>P1B = 2;</code>
        */
-      public static final int P1b_VALUE = 2;
+      public static final int P1B_VALUE = 2;
       /**
        * <code>P2A = 3;</code>
        */
@@ -405,7 +405,7 @@ public final class PaxosMsgs {
       public static Type forNumber(int value) {
         switch (value) {
           case 1: return P1A;
-          case 2: return P1b;
+          case 2: return P1B;
           case 3: return P2A;
           case 4: return P2B;
           case 5: return REQUEST;
@@ -973,7 +973,7 @@ public final class PaxosMsgs {
     }
     /**
      * <pre>
-     *wrapper. Add a protocol header to message
+     *wrapper. Add a protocol header to every message
      * </pre>
      *
      * Protobuf type {@code paxos.Paxos}
@@ -3936,17 +3936,17 @@ public final class PaxosMsgs {
     int getFrom();
 
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    boolean hasBallot();
+    boolean hasPvalue();
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    paxos.PaxosMsgs.Ballot getBallot();
+    paxos.PaxosMsgs.PValue getPvalue();
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder();
+    paxos.PaxosMsgs.PValueOrBuilder getPvalueOrBuilder();
   }
   /**
    * Protobuf type {@code paxos.P2a}
@@ -3997,14 +3997,14 @@ public final class PaxosMsgs {
               break;
             }
             case 18: {
-              paxos.PaxosMsgs.Ballot.Builder subBuilder = null;
+              paxos.PaxosMsgs.PValue.Builder subBuilder = null;
               if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                subBuilder = ballot_.toBuilder();
+                subBuilder = pvalue_.toBuilder();
               }
-              ballot_ = input.readMessage(paxos.PaxosMsgs.Ballot.PARSER, extensionRegistry);
+              pvalue_ = input.readMessage(paxos.PaxosMsgs.PValue.PARSER, extensionRegistry);
               if (subBuilder != null) {
-                subBuilder.mergeFrom(ballot_);
-                ballot_ = subBuilder.buildPartial();
+                subBuilder.mergeFrom(pvalue_);
+                pvalue_ = subBuilder.buildPartial();
               }
               bitField0_ |= 0x00000002;
               break;
@@ -4049,25 +4049,25 @@ public final class PaxosMsgs {
       return from_;
     }
 
-    public static final int BALLOT_FIELD_NUMBER = 2;
-    private paxos.PaxosMsgs.Ballot ballot_;
+    public static final int PVALUE_FIELD_NUMBER = 2;
+    private paxos.PaxosMsgs.PValue pvalue_;
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    public boolean hasBallot() {
+    public boolean hasPvalue() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    public paxos.PaxosMsgs.Ballot getBallot() {
-      return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+    public paxos.PaxosMsgs.PValue getPvalue() {
+      return pvalue_ == null ? paxos.PaxosMsgs.PValue.getDefaultInstance() : pvalue_;
     }
     /**
-     * <code>required .paxos.Ballot ballot = 2;</code>
+     * <code>required .paxos.PValue pvalue = 2;</code>
      */
-    public paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder() {
-      return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+    public paxos.PaxosMsgs.PValueOrBuilder getPvalueOrBuilder() {
+      return pvalue_ == null ? paxos.PaxosMsgs.PValue.getDefaultInstance() : pvalue_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4080,11 +4080,11 @@ public final class PaxosMsgs {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!hasBallot()) {
+      if (!hasPvalue()) {
         memoizedIsInitialized = 0;
         return false;
       }
-      if (!getBallot().isInitialized()) {
+      if (!getPvalue().isInitialized()) {
         memoizedIsInitialized = 0;
         return false;
       }
@@ -4098,7 +4098,7 @@ public final class PaxosMsgs {
         output.writeInt32(1, from_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, getBallot());
+        output.writeMessage(2, getPvalue());
       }
       unknownFields.writeTo(output);
     }
@@ -4114,7 +4114,7 @@ public final class PaxosMsgs {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getBallot());
+          .computeMessageSize(2, getPvalue());
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -4138,10 +4138,10 @@ public final class PaxosMsgs {
         result = result && (getFrom()
             == other.getFrom());
       }
-      result = result && (hasBallot() == other.hasBallot());
-      if (hasBallot()) {
-        result = result && getBallot()
-            .equals(other.getBallot());
+      result = result && (hasPvalue() == other.hasPvalue());
+      if (hasPvalue()) {
+        result = result && getPvalue()
+            .equals(other.getPvalue());
       }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
@@ -4158,9 +4158,9 @@ public final class PaxosMsgs {
         hash = (37 * hash) + FROM_FIELD_NUMBER;
         hash = (53 * hash) + getFrom();
       }
-      if (hasBallot()) {
-        hash = (37 * hash) + BALLOT_FIELD_NUMBER;
-        hash = (53 * hash) + getBallot().hashCode();
+      if (hasPvalue()) {
+        hash = (37 * hash) + PVALUE_FIELD_NUMBER;
+        hash = (53 * hash) + getPvalue().hashCode();
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -4276,17 +4276,17 @@ public final class PaxosMsgs {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
-          getBallotFieldBuilder();
+          getPvalueFieldBuilder();
         }
       }
       public Builder clear() {
         super.clear();
         from_ = 0;
         bitField0_ = (bitField0_ & ~0x00000001);
-        if (ballotBuilder_ == null) {
-          ballot_ = null;
+        if (pvalueBuilder_ == null) {
+          pvalue_ = null;
         } else {
-          ballotBuilder_.clear();
+          pvalueBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
@@ -4311,692 +4311,6 @@ public final class PaxosMsgs {
 
       public paxos.PaxosMsgs.P2a buildPartial() {
         paxos.PaxosMsgs.P2a result = new paxos.PaxosMsgs.P2a(this);
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
-          to_bitField0_ |= 0x00000001;
-        }
-        result.from_ = from_;
-        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
-          to_bitField0_ |= 0x00000002;
-        }
-        if (ballotBuilder_ == null) {
-          result.ballot_ = ballot_;
-        } else {
-          result.ballot_ = ballotBuilder_.build();
-        }
-        result.bitField0_ = to_bitField0_;
-        onBuilt();
-        return result;
-      }
-
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
-      public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof paxos.PaxosMsgs.P2a) {
-          return mergeFrom((paxos.PaxosMsgs.P2a)other);
-        } else {
-          super.mergeFrom(other);
-          return this;
-        }
-      }
-
-      public Builder mergeFrom(paxos.PaxosMsgs.P2a other) {
-        if (other == paxos.PaxosMsgs.P2a.getDefaultInstance()) return this;
-        if (other.hasFrom()) {
-          setFrom(other.getFrom());
-        }
-        if (other.hasBallot()) {
-          mergeBallot(other.getBallot());
-        }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
-        return this;
-      }
-
-      public final boolean isInitialized() {
-        if (!hasFrom()) {
-          return false;
-        }
-        if (!hasBallot()) {
-          return false;
-        }
-        if (!getBallot().isInitialized()) {
-          return false;
-        }
-        return true;
-      }
-
-      public Builder mergeFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws java.io.IOException {
-        paxos.PaxosMsgs.P2a parsedMessage = null;
-        try {
-          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
-        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (paxos.PaxosMsgs.P2a) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
-        } finally {
-          if (parsedMessage != null) {
-            mergeFrom(parsedMessage);
-          }
-        }
-        return this;
-      }
-      private int bitField0_;
-
-      private int from_ ;
-      /**
-       * <code>required int32 from = 1;</code>
-       */
-      public boolean hasFrom() {
-        return ((bitField0_ & 0x00000001) == 0x00000001);
-      }
-      /**
-       * <code>required int32 from = 1;</code>
-       */
-      public int getFrom() {
-        return from_;
-      }
-      /**
-       * <code>required int32 from = 1;</code>
-       */
-      public Builder setFrom(int value) {
-        bitField0_ |= 0x00000001;
-        from_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>required int32 from = 1;</code>
-       */
-      public Builder clearFrom() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        from_ = 0;
-        onChanged();
-        return this;
-      }
-
-      private paxos.PaxosMsgs.Ballot ballot_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
-          paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder> ballotBuilder_;
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public boolean hasBallot() {
-        return ((bitField0_ & 0x00000002) == 0x00000002);
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public paxos.PaxosMsgs.Ballot getBallot() {
-        if (ballotBuilder_ == null) {
-          return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
-        } else {
-          return ballotBuilder_.getMessage();
-        }
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public Builder setBallot(paxos.PaxosMsgs.Ballot value) {
-        if (ballotBuilder_ == null) {
-          if (value == null) {
-            throw new NullPointerException();
-          }
-          ballot_ = value;
-          onChanged();
-        } else {
-          ballotBuilder_.setMessage(value);
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public Builder setBallot(
-          paxos.PaxosMsgs.Ballot.Builder builderForValue) {
-        if (ballotBuilder_ == null) {
-          ballot_ = builderForValue.build();
-          onChanged();
-        } else {
-          ballotBuilder_.setMessage(builderForValue.build());
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public Builder mergeBallot(paxos.PaxosMsgs.Ballot value) {
-        if (ballotBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              ballot_ != null &&
-              ballot_ != paxos.PaxosMsgs.Ballot.getDefaultInstance()) {
-            ballot_ =
-              paxos.PaxosMsgs.Ballot.newBuilder(ballot_).mergeFrom(value).buildPartial();
-          } else {
-            ballot_ = value;
-          }
-          onChanged();
-        } else {
-          ballotBuilder_.mergeFrom(value);
-        }
-        bitField0_ |= 0x00000002;
-        return this;
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public Builder clearBallot() {
-        if (ballotBuilder_ == null) {
-          ballot_ = null;
-          onChanged();
-        } else {
-          ballotBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public paxos.PaxosMsgs.Ballot.Builder getBallotBuilder() {
-        bitField0_ |= 0x00000002;
-        onChanged();
-        return getBallotFieldBuilder().getBuilder();
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      public paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder() {
-        if (ballotBuilder_ != null) {
-          return ballotBuilder_.getMessageOrBuilder();
-        } else {
-          return ballot_ == null ?
-              paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
-        }
-      }
-      /**
-       * <code>required .paxos.Ballot ballot = 2;</code>
-       */
-      private com.google.protobuf.SingleFieldBuilderV3<
-          paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder> 
-          getBallotFieldBuilder() {
-        if (ballotBuilder_ == null) {
-          ballotBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-              paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder>(
-                  getBallot(),
-                  getParentForChildren(),
-                  isClean());
-          ballot_ = null;
-        }
-        return ballotBuilder_;
-      }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
-
-      // @@protoc_insertion_point(builder_scope:paxos.P2a)
-    }
-
-    // @@protoc_insertion_point(class_scope:paxos.P2a)
-    private static final paxos.PaxosMsgs.P2a DEFAULT_INSTANCE;
-    static {
-      DEFAULT_INSTANCE = new paxos.PaxosMsgs.P2a();
-    }
-
-    public static paxos.PaxosMsgs.P2a getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<P2a>
-        PARSER = new com.google.protobuf.AbstractParser<P2a>() {
-      public P2a parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new P2a(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<P2a> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<P2a> getParserForType() {
-      return PARSER;
-    }
-
-    public paxos.PaxosMsgs.P2a getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
-  }
-
-  public interface P2bOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:paxos.P2b)
-      com.google.protobuf.MessageOrBuilder {
-
-    /**
-     * <code>required int32 from = 1;</code>
-     */
-    boolean hasFrom();
-    /**
-     * <code>required int32 from = 1;</code>
-     */
-    int getFrom();
-
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    boolean hasPvalue();
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    paxos.PaxosMsgs.PValue getPvalue();
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    paxos.PaxosMsgs.PValueOrBuilder getPvalueOrBuilder();
-  }
-  /**
-   * Protobuf type {@code paxos.P2b}
-   */
-  public  static final class P2b extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:paxos.P2b)
-      P2bOrBuilder {
-    // Use P2b.newBuilder() to construct.
-    private P2b(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
-      super(builder);
-    }
-    private P2b() {
-      from_ = 0;
-    }
-
-    @java.lang.Override
-    public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
-      return this.unknownFields;
-    }
-    private P2b(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
-      int mutable_bitField0_ = 0;
-      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-          com.google.protobuf.UnknownFieldSet.newBuilder();
-      try {
-        boolean done = false;
-        while (!done) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              done = true;
-              break;
-            default: {
-              if (!parseUnknownField(input, unknownFields,
-                                     extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
-            case 8: {
-              bitField0_ |= 0x00000001;
-              from_ = input.readInt32();
-              break;
-            }
-            case 18: {
-              paxos.PaxosMsgs.PValue.Builder subBuilder = null;
-              if (((bitField0_ & 0x00000002) == 0x00000002)) {
-                subBuilder = pvalue_.toBuilder();
-              }
-              pvalue_ = input.readMessage(paxos.PaxosMsgs.PValue.PARSER, extensionRegistry);
-              if (subBuilder != null) {
-                subBuilder.mergeFrom(pvalue_);
-                pvalue_ = subBuilder.buildPartial();
-              }
-              bitField0_ |= 0x00000002;
-              break;
-            }
-          }
-        }
-      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        throw e.setUnfinishedMessage(this);
-      } catch (java.io.IOException e) {
-        throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
-      } finally {
-        this.unknownFields = unknownFields.build();
-        makeExtensionsImmutable();
-      }
-    }
-    public static final com.google.protobuf.Descriptors.Descriptor
-        getDescriptor() {
-      return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
-    }
-
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-        internalGetFieldAccessorTable() {
-      return paxos.PaxosMsgs.internal_static_paxos_P2b_fieldAccessorTable
-          .ensureFieldAccessorsInitialized(
-              paxos.PaxosMsgs.P2b.class, paxos.PaxosMsgs.P2b.Builder.class);
-    }
-
-    private int bitField0_;
-    public static final int FROM_FIELD_NUMBER = 1;
-    private int from_;
-    /**
-     * <code>required int32 from = 1;</code>
-     */
-    public boolean hasFrom() {
-      return ((bitField0_ & 0x00000001) == 0x00000001);
-    }
-    /**
-     * <code>required int32 from = 1;</code>
-     */
-    public int getFrom() {
-      return from_;
-    }
-
-    public static final int PVALUE_FIELD_NUMBER = 2;
-    private paxos.PaxosMsgs.PValue pvalue_;
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    public boolean hasPvalue() {
-      return ((bitField0_ & 0x00000002) == 0x00000002);
-    }
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    public paxos.PaxosMsgs.PValue getPvalue() {
-      return pvalue_ == null ? paxos.PaxosMsgs.PValue.getDefaultInstance() : pvalue_;
-    }
-    /**
-     * <code>required .paxos.PValue pvalue = 2;</code>
-     */
-    public paxos.PaxosMsgs.PValueOrBuilder getPvalueOrBuilder() {
-      return pvalue_ == null ? paxos.PaxosMsgs.PValue.getDefaultInstance() : pvalue_;
-    }
-
-    private byte memoizedIsInitialized = -1;
-    public final boolean isInitialized() {
-      byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
-
-      if (!hasFrom()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPvalue()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getPvalue().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      memoizedIsInitialized = 1;
-      return true;
-    }
-
-    public void writeTo(com.google.protobuf.CodedOutputStream output)
-                        throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt32(1, from_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, getPvalue());
-      }
-      unknownFields.writeTo(output);
-    }
-
-    public int getSerializedSize() {
-      int size = memoizedSize;
-      if (size != -1) return size;
-
-      size = 0;
-      if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(1, from_);
-      }
-      if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getPvalue());
-      }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
-      return size;
-    }
-
-    private static final long serialVersionUID = 0L;
-    @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof paxos.PaxosMsgs.P2b)) {
-        return super.equals(obj);
-      }
-      paxos.PaxosMsgs.P2b other = (paxos.PaxosMsgs.P2b) obj;
-
-      boolean result = true;
-      result = result && (hasFrom() == other.hasFrom());
-      if (hasFrom()) {
-        result = result && (getFrom()
-            == other.getFrom());
-      }
-      result = result && (hasPvalue() == other.hasPvalue());
-      if (hasPvalue()) {
-        result = result && getPvalue()
-            .equals(other.getPvalue());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasFrom()) {
-        hash = (37 * hash) + FROM_FIELD_NUMBER;
-        hash = (53 * hash) + getFrom();
-      }
-      if (hasPvalue()) {
-        hash = (37 * hash) + PVALUE_FIELD_NUMBER;
-        hash = (53 * hash) + getPvalue().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
-    }
-
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        com.google.protobuf.ByteString data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        com.google.protobuf.ByteString data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(byte[] data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        byte[] data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static paxos.PaxosMsgs.P2b parseDelimitedFrom(java.io.InputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
-    }
-    public static paxos.PaxosMsgs.P2b parseDelimitedFrom(
-        java.io.InputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        com.google.protobuf.CodedInputStream input)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
-    }
-    public static paxos.PaxosMsgs.P2b parseFrom(
-        com.google.protobuf.CodedInputStream input,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
-    }
-
-    public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
-    public static Builder newBuilder(paxos.PaxosMsgs.P2b prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
-    }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
-
-    @java.lang.Override
-    protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-      Builder builder = new Builder(parent);
-      return builder;
-    }
-    /**
-     * Protobuf type {@code paxos.P2b}
-     */
-    public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:paxos.P2b)
-        paxos.PaxosMsgs.P2bOrBuilder {
-      public static final com.google.protobuf.Descriptors.Descriptor
-          getDescriptor() {
-        return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
-      }
-
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-          internalGetFieldAccessorTable() {
-        return paxos.PaxosMsgs.internal_static_paxos_P2b_fieldAccessorTable
-            .ensureFieldAccessorsInitialized(
-                paxos.PaxosMsgs.P2b.class, paxos.PaxosMsgs.P2b.Builder.class);
-      }
-
-      // Construct using paxos.PaxosMsgs.P2b.newBuilder()
-      private Builder() {
-        maybeForceBuilderInitialization();
-      }
-
-      private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
-        super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getPvalueFieldBuilder();
-        }
-      }
-      public Builder clear() {
-        super.clear();
-        from_ = 0;
-        bitField0_ = (bitField0_ & ~0x00000001);
-        if (pvalueBuilder_ == null) {
-          pvalue_ = null;
-        } else {
-          pvalueBuilder_.clear();
-        }
-        bitField0_ = (bitField0_ & ~0x00000002);
-        return this;
-      }
-
-      public com.google.protobuf.Descriptors.Descriptor
-          getDescriptorForType() {
-        return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
-      }
-
-      public paxos.PaxosMsgs.P2b getDefaultInstanceForType() {
-        return paxos.PaxosMsgs.P2b.getDefaultInstance();
-      }
-
-      public paxos.PaxosMsgs.P2b build() {
-        paxos.PaxosMsgs.P2b result = buildPartial();
-        if (!result.isInitialized()) {
-          throw newUninitializedMessageException(result);
-        }
-        return result;
-      }
-
-      public paxos.PaxosMsgs.P2b buildPartial() {
-        paxos.PaxosMsgs.P2b result = new paxos.PaxosMsgs.P2b(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -5043,16 +4357,16 @@ public final class PaxosMsgs {
         return (Builder) super.addRepeatedField(field, value);
       }
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof paxos.PaxosMsgs.P2b) {
-          return mergeFrom((paxos.PaxosMsgs.P2b)other);
+        if (other instanceof paxos.PaxosMsgs.P2a) {
+          return mergeFrom((paxos.PaxosMsgs.P2a)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(paxos.PaxosMsgs.P2b other) {
-        if (other == paxos.PaxosMsgs.P2b.getDefaultInstance()) return this;
+      public Builder mergeFrom(paxos.PaxosMsgs.P2a other) {
+        if (other == paxos.PaxosMsgs.P2a.getDefaultInstance()) return this;
         if (other.hasFrom()) {
           setFrom(other.getFrom());
         }
@@ -5081,11 +4395,11 @@ public final class PaxosMsgs {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        paxos.PaxosMsgs.P2b parsedMessage = null;
+        paxos.PaxosMsgs.P2a parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (paxos.PaxosMsgs.P2b) e.getUnfinishedMessage();
+          parsedMessage = (paxos.PaxosMsgs.P2a) e.getUnfinishedMessage();
           throw e.unwrapIOException();
         } finally {
           if (parsedMessage != null) {
@@ -5244,6 +4558,692 @@ public final class PaxosMsgs {
           pvalue_ = null;
         }
         return pvalueBuilder_;
+      }
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:paxos.P2a)
+    }
+
+    // @@protoc_insertion_point(class_scope:paxos.P2a)
+    private static final paxos.PaxosMsgs.P2a DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new paxos.PaxosMsgs.P2a();
+    }
+
+    public static paxos.PaxosMsgs.P2a getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    @java.lang.Deprecated public static final com.google.protobuf.Parser<P2a>
+        PARSER = new com.google.protobuf.AbstractParser<P2a>() {
+      public P2a parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+          return new P2a(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<P2a> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<P2a> getParserForType() {
+      return PARSER;
+    }
+
+    public paxos.PaxosMsgs.P2a getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
+  public interface P2bOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:paxos.P2b)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>required int32 from = 1;</code>
+     */
+    boolean hasFrom();
+    /**
+     * <code>required int32 from = 1;</code>
+     */
+    int getFrom();
+
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    boolean hasBallot();
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    paxos.PaxosMsgs.Ballot getBallot();
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder();
+  }
+  /**
+   * Protobuf type {@code paxos.P2b}
+   */
+  public  static final class P2b extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:paxos.P2b)
+      P2bOrBuilder {
+    // Use P2b.newBuilder() to construct.
+    private P2b(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private P2b() {
+      from_ = 0;
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private P2b(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              from_ = input.readInt32();
+              break;
+            }
+            case 18: {
+              paxos.PaxosMsgs.Ballot.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000002) == 0x00000002)) {
+                subBuilder = ballot_.toBuilder();
+              }
+              ballot_ = input.readMessage(paxos.PaxosMsgs.Ballot.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(ballot_);
+                ballot_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000002;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return paxos.PaxosMsgs.internal_static_paxos_P2b_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              paxos.PaxosMsgs.P2b.class, paxos.PaxosMsgs.P2b.Builder.class);
+    }
+
+    private int bitField0_;
+    public static final int FROM_FIELD_NUMBER = 1;
+    private int from_;
+    /**
+     * <code>required int32 from = 1;</code>
+     */
+    public boolean hasFrom() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>required int32 from = 1;</code>
+     */
+    public int getFrom() {
+      return from_;
+    }
+
+    public static final int BALLOT_FIELD_NUMBER = 2;
+    private paxos.PaxosMsgs.Ballot ballot_;
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    public boolean hasBallot() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    public paxos.PaxosMsgs.Ballot getBallot() {
+      return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+    }
+    /**
+     * <code>required .paxos.Ballot ballot = 2;</code>
+     */
+    public paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder() {
+      return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+    }
+
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      if (!hasFrom()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!hasBallot()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      if (!getBallot().isInitialized()) {
+        memoizedIsInitialized = 0;
+        return false;
+      }
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, from_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeMessage(2, getBallot());
+      }
+      unknownFields.writeTo(output);
+    }
+
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, from_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(2, getBallot());
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof paxos.PaxosMsgs.P2b)) {
+        return super.equals(obj);
+      }
+      paxos.PaxosMsgs.P2b other = (paxos.PaxosMsgs.P2b) obj;
+
+      boolean result = true;
+      result = result && (hasFrom() == other.hasFrom());
+      if (hasFrom()) {
+        result = result && (getFrom()
+            == other.getFrom());
+      }
+      result = result && (hasBallot() == other.hasBallot());
+      if (hasBallot()) {
+        result = result && getBallot()
+            .equals(other.getBallot());
+      }
+      result = result && unknownFields.equals(other.unknownFields);
+      return result;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptorForType().hashCode();
+      if (hasFrom()) {
+        hash = (37 * hash) + FROM_FIELD_NUMBER;
+        hash = (53 * hash) + getFrom();
+      }
+      if (hasBallot()) {
+        hash = (37 * hash) + BALLOT_FIELD_NUMBER;
+        hash = (53 * hash) + getBallot().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static paxos.PaxosMsgs.P2b parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static paxos.PaxosMsgs.P2b parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static paxos.PaxosMsgs.P2b parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(paxos.PaxosMsgs.P2b prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code paxos.P2b}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:paxos.P2b)
+        paxos.PaxosMsgs.P2bOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return paxos.PaxosMsgs.internal_static_paxos_P2b_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                paxos.PaxosMsgs.P2b.class, paxos.PaxosMsgs.P2b.Builder.class);
+      }
+
+      // Construct using paxos.PaxosMsgs.P2b.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+          getBallotFieldBuilder();
+        }
+      }
+      public Builder clear() {
+        super.clear();
+        from_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (ballotBuilder_ == null) {
+          ballot_ = null;
+        } else {
+          ballotBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return paxos.PaxosMsgs.internal_static_paxos_P2b_descriptor;
+      }
+
+      public paxos.PaxosMsgs.P2b getDefaultInstanceForType() {
+        return paxos.PaxosMsgs.P2b.getDefaultInstance();
+      }
+
+      public paxos.PaxosMsgs.P2b build() {
+        paxos.PaxosMsgs.P2b result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public paxos.PaxosMsgs.P2b buildPartial() {
+        paxos.PaxosMsgs.P2b result = new paxos.PaxosMsgs.P2b(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.from_ = from_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        if (ballotBuilder_ == null) {
+          result.ballot_ = ballot_;
+        } else {
+          result.ballot_ = ballotBuilder_.build();
+        }
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder clone() {
+        return (Builder) super.clone();
+      }
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.setField(field, value);
+      }
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return (Builder) super.clearField(field);
+      }
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return (Builder) super.clearOneof(oneof);
+      }
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, Object value) {
+        return (Builder) super.setRepeatedField(field, index, value);
+      }
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          Object value) {
+        return (Builder) super.addRepeatedField(field, value);
+      }
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof paxos.PaxosMsgs.P2b) {
+          return mergeFrom((paxos.PaxosMsgs.P2b)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(paxos.PaxosMsgs.P2b other) {
+        if (other == paxos.PaxosMsgs.P2b.getDefaultInstance()) return this;
+        if (other.hasFrom()) {
+          setFrom(other.getFrom());
+        }
+        if (other.hasBallot()) {
+          mergeBallot(other.getBallot());
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        if (!hasFrom()) {
+          return false;
+        }
+        if (!hasBallot()) {
+          return false;
+        }
+        if (!getBallot().isInitialized()) {
+          return false;
+        }
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        paxos.PaxosMsgs.P2b parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (paxos.PaxosMsgs.P2b) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int from_ ;
+      /**
+       * <code>required int32 from = 1;</code>
+       */
+      public boolean hasFrom() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>required int32 from = 1;</code>
+       */
+      public int getFrom() {
+        return from_;
+      }
+      /**
+       * <code>required int32 from = 1;</code>
+       */
+      public Builder setFrom(int value) {
+        bitField0_ |= 0x00000001;
+        from_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>required int32 from = 1;</code>
+       */
+      public Builder clearFrom() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        from_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private paxos.PaxosMsgs.Ballot ballot_ = null;
+      private com.google.protobuf.SingleFieldBuilderV3<
+          paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder> ballotBuilder_;
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public boolean hasBallot() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public paxos.PaxosMsgs.Ballot getBallot() {
+        if (ballotBuilder_ == null) {
+          return ballot_ == null ? paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+        } else {
+          return ballotBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public Builder setBallot(paxos.PaxosMsgs.Ballot value) {
+        if (ballotBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          ballot_ = value;
+          onChanged();
+        } else {
+          ballotBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public Builder setBallot(
+          paxos.PaxosMsgs.Ballot.Builder builderForValue) {
+        if (ballotBuilder_ == null) {
+          ballot_ = builderForValue.build();
+          onChanged();
+        } else {
+          ballotBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public Builder mergeBallot(paxos.PaxosMsgs.Ballot value) {
+        if (ballotBuilder_ == null) {
+          if (((bitField0_ & 0x00000002) == 0x00000002) &&
+              ballot_ != null &&
+              ballot_ != paxos.PaxosMsgs.Ballot.getDefaultInstance()) {
+            ballot_ =
+              paxos.PaxosMsgs.Ballot.newBuilder(ballot_).mergeFrom(value).buildPartial();
+          } else {
+            ballot_ = value;
+          }
+          onChanged();
+        } else {
+          ballotBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000002;
+        return this;
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public Builder clearBallot() {
+        if (ballotBuilder_ == null) {
+          ballot_ = null;
+          onChanged();
+        } else {
+          ballotBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public paxos.PaxosMsgs.Ballot.Builder getBallotBuilder() {
+        bitField0_ |= 0x00000002;
+        onChanged();
+        return getBallotFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      public paxos.PaxosMsgs.BallotOrBuilder getBallotOrBuilder() {
+        if (ballotBuilder_ != null) {
+          return ballotBuilder_.getMessageOrBuilder();
+        } else {
+          return ballot_ == null ?
+              paxos.PaxosMsgs.Ballot.getDefaultInstance() : ballot_;
+        }
+      }
+      /**
+       * <code>required .paxos.Ballot ballot = 2;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilderV3<
+          paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder> 
+          getBallotFieldBuilder() {
+        if (ballotBuilder_ == null) {
+          ballotBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+              paxos.PaxosMsgs.Ballot, paxos.PaxosMsgs.Ballot.Builder, paxos.PaxosMsgs.BallotOrBuilder>(
+                  getBallot(),
+                  getParentForChildren(),
+                  isClean());
+          ballot_ = null;
+        }
+        return ballotBuilder_;
       }
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
@@ -10927,15 +10927,15 @@ public final class PaxosMsgs {
       "(\0132\016.paxos.Request\022!\n\010response\030\007 \001(\0132\017.p" +
       "axos.Response\022\037\n\007propose\030\010 \001(\0132\016.paxos.P" +
       "ropose\022!\n\010decision\030\t \001(\0132\017.paxos.Decisio" +
-      "n\"`\n\004Type\022\007\n\003P1A\020\001\022\007\n\003P1b\020\002\022\007\n\003P2A\020\003\022\007\n\003" +
+      "n\"`\n\004Type\022\007\n\003P1A\020\001\022\007\n\003P1B\020\002\022\007\n\003P2A\020\003\022\007\n\003" +
       "P2B\020\004\022\013\n\007REQUEST\020\005\022\014\n\010RESPONSE\020\006\022\013\n\007PROP",
       "OSE\020\007\022\014\n\010DECISION\020\010\"2\n\003P1a\022\014\n\004from\030\001 \002(\005" +
       "\022\035\n\006ballot\030\002 \002(\0132\r.paxos.Ballot\"U\n\003P1b\022\014" +
       "\n\004from\030\001 \002(\005\022\035\n\006ballot\030\002 \002(\0132\r.paxos.Bal" +
       "lot\022!\n\010accepted\030\003 \002(\0132\017.paxos.Accepted\"2" +
-      "\n\003P2a\022\014\n\004from\030\001 \002(\005\022\035\n\006ballot\030\002 \002(\0132\r.pa" +
-      "xos.Ballot\"2\n\003P2b\022\014\n\004from\030\001 \002(\005\022\035\n\006pvalu" +
-      "e\030\002 \002(\0132\r.paxos.PValue\"$\n\007Request\022\031\n\001c\030\001" +
+      "\n\003P2a\022\014\n\004from\030\001 \002(\005\022\035\n\006pvalue\030\002 \002(\0132\r.pa" +
+      "xos.PValue\"2\n\003P2b\022\014\n\004from\030\001 \002(\005\022\035\n\006ballo" +
+      "t\030\002 \002(\0132\r.paxos.Ballot\"$\n\007Request\022\031\n\001c\030\001" +
       " \002(\0132\016.paxos.Command\"\'\n\010Response\022\013\n\003cid\030" +
       "\001 \002(\005\022\016\n\006result\030\002 \002(\t\"5\n\007Propose\022\017\n\007slot" +
       "_in\030\001 \002(\005\022\031\n\001c\030\002 \002(\0132\016.paxos.Command\"6\n\010",
@@ -10983,13 +10983,13 @@ public final class PaxosMsgs {
     internal_static_paxos_P2a_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_paxos_P2a_descriptor,
-        new java.lang.String[] { "From", "Ballot", });
+        new java.lang.String[] { "From", "Pvalue", });
     internal_static_paxos_P2b_descriptor =
       getDescriptor().getMessageTypes().get(4);
     internal_static_paxos_P2b_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_paxos_P2b_descriptor,
-        new java.lang.String[] { "From", "Pvalue", });
+        new java.lang.String[] { "From", "Ballot", });
     internal_static_paxos_Request_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_paxos_Request_fieldAccessorTable = new

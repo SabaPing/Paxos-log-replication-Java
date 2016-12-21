@@ -7,7 +7,7 @@ option java_outer_classname = "PaxosMsgs";
 message Paxos {
     enum Type {
         P1A = 1;
-        P1b = 2;
+        P1B = 2;
         P2A = 3;
         P2B = 4;
 
@@ -44,12 +44,12 @@ message P1b {
 
 message P2a {
     required int32 from = 1;
-    required Ballot ballot = 2;
+    required PValue pvalue = 2;
 }
 
 message P2b {
     required int32 from = 1;
-    required PValue pvalue = 2;
+    required Ballot ballot = 2;
 }
 
 //message between replicas and clients
