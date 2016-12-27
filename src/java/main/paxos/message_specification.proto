@@ -16,6 +16,9 @@ message Paxos {
 
         PROPOSE = 7;
         DECISION = 8;
+
+        ADOPTED = 9;
+        PREEMPTED = 10;
     }
 
     required Type type = 1;
@@ -28,28 +31,34 @@ message Paxos {
     optional Response response = 7;
     optional Propose propose = 8;
     optional Decision decision = 9;
+    optional Adopted adopted = 10;
+    optional Preempted preempted = 11;
 }
 
 //message in synod
 message P1a {
-    required int32 from = 1;
-    required Ballot ballot = 2;
+    required int32 fromLeader = 1;
+    required int32 fromScout = 2;
+    required Ballot ballot = 3;
 }
 
 message P1b {
     required int32 from = 1;
-    required Ballot ballot = 2;
-    required Accepted accepted = 3;
+    required int32 toScout = 2;
+    required Ballot ballot = 3;
+    required Accepted accepted = 4;
 }
 
 message P2a {
-    required int32 from = 1;
-    required PValue pvalue = 2;
+    required int32 fromLeader = 1;
+    required int32 fromCommander = 2;
+    required PValue pvalue = 3;
 }
 
 message P2b {
     required int32 from = 1;
-    required Ballot ballot = 2;
+    required int32 toCommander = 2;
+    required Ballot ballot = 3;
 }
 
 //message between replicas and clients
@@ -73,6 +82,20 @@ message Decision {
     required Command c = 2;
 }
 
+//messages for IPC in leader
+message Adopted {
+    required Ballot ballot = 1;
+    required Accepted pvalues = 2;
+}
+
+message Preempted {
+    required Ballot ballot = 1;
+}
+
+
+
+
+
 //helper structure
 message Ballot {
     required int32 prefix = 1;
@@ -83,7 +106,7 @@ message Ballot {
 message PValue {
     required Ballot ballot = 1;
     required int32 slotNum = 2;
-    required string cmd = 3;
+    required Command cmd = 3;
 
 }
 

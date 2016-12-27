@@ -1,7 +1,7 @@
 package paxos;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import utilities.Transport;
+import utilities.Environment;
 
 import java.util.*;
 import paxos.PaxosMsgs.*;
@@ -13,27 +13,26 @@ import static paxos.PaxosMsgs.Paxos.Type.*;
  *
  * If process is an acceptor, it only has a single thread.
  */
-public class Acceptor {
+public class Acceptor extends Thread{
     private Ballot curBallot;
-    Set<PValue> accepted;
-    private Transport transport;
-    private List<Integer> knownLeaders;
+    private final Set<PValue> accepted;
+    private final Environment environment;
     private final int ID;
 
-    public Acceptor(int id, Transport transport){
+    public Acceptor(int id, Environment environment){
         curBallot = Ballot.newBuilder()
                 .setPrefix(0)
                 .setConductor(0)
                 .build();
         accepted = new HashSet<>();
-        this.transport = transport;
+        this.environment = environment;
         this.ID = id;
-        knownLeaders = new ArrayList<>(transport.getLeaders());
     }
 
+    @Override
     public void run() {
         while(true){
-            byte[] rawBytes = transport.receive();
+            byte[] rawBytes = environment.receive();
             try {
                 Paxos message = Paxos.parseFrom(rawBytes);
                 switch(message.getType()){
@@ -41,11 +40,12 @@ public class Acceptor {
                         P1a body = message.getP1A();
                         if (new BallotComparator().compare(body.getBallot(), curBallot) == 1)
                             curBallot = body.getBallot();
-                        transport.send(body.getFrom(),
+                        environment.send(body.getFromLeader(),
                                 Paxos.newBuilder()
                                 .setType(P1B)
                                 .setP1B(P1b.newBuilder()
                                     .setFrom(ID)
+                                    .setToScout(body.getFromScout())
                                     .setBallot(curBallot)
                                     .setAccepted(Accepted.newBuilder()
                                             .addAllPvalue(accepted)))
@@ -57,18 +57,19 @@ public class Acceptor {
                         if (new BallotComparator().compare(body.getPvalue().getBallot(), curBallot) == 0)
                             //assume protobuf library override equals() correctly!
                             accepted.add(body.getPvalue());
-                        transport.send(body.getFrom(),
+                        environment.send(body.getFromLeader(),
                                 Paxos.newBuilder()
                                         .setType(P2B)
                                         .setP2B(P2b.newBuilder()
                                                 .setFrom(ID)
+                                                .setToCommander(body.getFromCommander())
                                                 .setBallot(curBallot))
                                         .build().toByteArray());
                         break;
                     }
                 }
             } catch (InvalidProtocolBufferException e) {
-                System.err.println("Cannot parse message: Paxos");
+                System.err.println("Acceptor " + ID + ": cannot parse message.");
                 e.printStackTrace();
             }
         }
