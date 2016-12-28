@@ -12,14 +12,15 @@ import static paxos.PaxosMsgs.Paxos.Type.*;
 
 
 /**
- * Created by yifan on 12/17/16.
- *
  * todo design concurrent structure, check if thread safe
+ *
+ * todo need re-read all code
  */
 public class Leader extends Thread{
-    private final Ballot ballot;
-    private final boolean active;
-    private final Set<Propose> proposals;
+    private Ballot leaderBallot;
+    private boolean active;
+
+    private final Map<Integer, Command> proposals;
 
     //Message handler thread
     private final MessageHandler msgHandler;
@@ -39,14 +40,14 @@ public class Leader extends Thread{
 
     public Leader(int id, Environment environment) {
         ID = id;
-        ballot = Ballot.newBuilder().setPrefix(0).setConductor(id).build();
+        leaderBallot = Ballot.newBuilder().setPrefix(0).setConductor(id).build();
         active = false;
-        proposals = new HashSet<>();
+        proposals = new HashMap<>();
 
         this.environment = environment;
 
         //to avoid this reference escape, don's start inner class thread in constructor
-        msgHandler = new MessageHandler();
+        msgHandler = new MessageHandler(ThreadID.get());
 
         messageQueues = new ConcurrentHashMap<>();
 
@@ -57,11 +58,83 @@ public class Leader extends Thread{
 
     @Override
     public void run() {
+        //spawn an initial scout
+        new Scout(leaderBallot).start();
 
+        try {
+            while (true)
+                forever();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            //leader never end. not necessary to de-register.
+        }
+        //when return, cleanup.
     }
 
-    private void forever(){
+    /**
+     * todo concurrency
+     * this method transit shared states, need careful concurrent design
+     * @throws InterruptedException
+     */
+    private void forever() throws InterruptedException{
+        Paxos incMsg = incomingMessages.take();
+        switch (incMsg.getType()) {
+            case PROPOSE: {
+                Propose temp_propose = incMsg.getPropose();
+                if (!proposals.containsKey(temp_propose.getSlotIn())){
+                    proposals.put(temp_propose.getSlotIn(), temp_propose.getC());
+                    if (active) {
 
+                        //spawn a Commander
+                        new Commander(PValue.newBuilder()
+                                .setBallot(leaderBallot)
+                                .setSlotNum(temp_propose.getSlotIn())
+                                .setCmd(temp_propose.getC())
+                                .build()).start();
+                    }
+                }
+            }
+            case ADOPTED: {
+                Adopted temp_adopted = incMsg.getAdopted();
+                if (leaderBallot.equals(temp_adopted.getBallot())){
+
+                    /**
+                     * updates the set of proposals, replacing for each slot number
+                     * the command corresponding to the maximum pvalue in pvals, if any.
+                     */
+                    Map<Integer, Ballot> pmax = new HashMap<>();
+                    for(PValue pv : temp_adopted.getPvalues().getPvalueList()){
+                        if(!pmax.containsKey(pv.getSlotNum()) ||
+                                new BallotComparator().compare(pmax.get(pv.getSlotNum()), pv.getBallot()) == -1)
+                            proposals.put(pv.getSlotNum(), pv.getCmd());
+                    }
+
+                    for(Map.Entry<Integer, Command> entry : proposals.entrySet()) {
+                        PValue temp_pv = PValue.newBuilder()
+                                .setBallot(leaderBallot)
+                                .setSlotNum(entry.getKey())
+                                .setCmd(entry.getValue())
+                                .build();
+                        new Commander(temp_pv).start();
+                    }
+
+                    active = true;
+                }
+
+            }
+            case PREEMPTED: {
+                Preempted temp_preempted = incMsg.getPreempted();
+                if (new BallotComparator().compare(temp_preempted.getBallot(), leaderBallot) == 1) {
+                    active = false;
+                    leaderBallot = Ballot.newBuilder()
+                            .setPrefix(temp_preempted.getBallot().getPrefix() + 1)
+                            .setConductor(ID)
+                            .build();
+                    new Scout(leaderBallot).start();
+                }
+            }
+        }
     }
 
 
@@ -69,23 +142,46 @@ public class Leader extends Thread{
 
 
     /**
-     * 这里scouts由leader id + ballot 唯一确定，commanders由leader+ballot+slot唯一确定。
-     * 对每个不同的scout和commander threads，里面都要有个block Q。
-     * MessageHandler 必须知道msg type，ballot，和proposal，把对应的msg put到对应的Q里。
+     * 这里scouts由leader id + leaderBallot 唯一确定，commanders由leader+leaderBallot+slot唯一确定。
+     * 对每个不同的scout和commander threads，里面都要有个blocking Q。
+     * MessageHandler 必须知道msg type，leaderBallot，和proposal，把对应的msg put到对应的Q里。
      * 以上保证了reliable。
      * 注意：见paper笔记。需要在msg里加额外的from，to fields
      * And give scout and commander 一个额外的 int id, use ThreadLocal
      */
     private class MessageHandler extends Thread{
 
+        private final int leadLocalId;
 
-        public MessageHandler () {
+        public MessageHandler (int leadLocalId) {
+            this.leadLocalId = leadLocalId;
         }
 
         @Override
         public void run() {
             while(true) {
 
+                //This statement will be blocked if there is no incoming message.
+                Paxos message = environment.receive();
+
+                try {
+                    switch (message.getType()) {
+                        case PROPOSE: {
+                            messageQueues.get(leadLocalId).put(message);
+                            break;
+                        }
+                        case P1B: {
+                            int scoutId = message.getP1B().getToScout();
+                            messageQueues.get(scoutId).put(message);
+                        }
+                        case P2B: {
+                            int commanderId = message.getP2B().getToCommander();
+                            messageQueues.get(commanderId).put(message);
+                        }
+                    }
+                }catch (InterruptedException e){
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -102,11 +198,11 @@ public class Leader extends Thread{
         private final Set<PValue> pValueSet;
 
         private final BlockingQueue<Paxos> incomingMessages;
-        private final Ballot b;
+        private final Ballot scoutBallot;
         private final List<Integer> waitforAccetpors;
 
         public Scout(Ballot ballot) {
-            b = ballot;
+            scoutBallot = ballot;
             pValueSet = new HashSet<>();
             this.incomingMessages = new ArrayBlockingQueue<>(100);
             messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
@@ -121,20 +217,20 @@ public class Leader extends Thread{
                     .setP1A(P1a.newBuilder()
                         .setFromLeader(ID)
                         .setFromScout(ThreadID.get())
-                        .setBallot(b))
+                        .setBallot(scoutBallot))
                     .build();
-            byte[] p1aBytes = p1a.toByteArray();
 
             for(int acceptor : waitforAccetpors){
-                environment.send(acceptor, p1aBytes);
+                environment.send(acceptor, p1a);
             }
 
-            while(true){
-                try {
+            try {
+                while(true){
+
                     //because of message handler, scout can only get p1b msg
                     P1b incMsg = incomingMessages.take().getP1B();
 
-                    if(incMsg.getBallot().equals(b)){
+                    if(incMsg.getBallot().equals(scoutBallot)){
                         pValueSet.addAll(incMsg.getAccepted().getPvalueList());
                         //use Integer.valueOf to use internal cache
                         waitforAccetpors.remove(Integer.valueOf(incMsg.getFrom()));
@@ -144,7 +240,7 @@ public class Leader extends Thread{
                             Leader.this.incomingMessages.put(Paxos.newBuilder()
                                     .setType(ADOPTED)
                                     .setAdopted(Adopted.newBuilder()
-                                        .setBallot(b)
+                                        .setBallot(scoutBallot)
                                         .setPvalues(Accepted.newBuilder()
                                             .addAllPvalue(pValueSet)))
                                     .build());
@@ -159,9 +255,12 @@ public class Leader extends Thread{
                                 .build());
                         return;
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
                 }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                messageQueues.remove(ThreadID.get());
             }
         }
     }
@@ -191,15 +290,14 @@ public class Leader extends Thread{
                             .setFromCommander(ThreadID.get())
                             .setPvalue(pvalue))
                     .build();
-            byte[] p2aBytes = p2a.toByteArray();
 
-            //todo what is this acceptor set, need check
             for(int acceptor : waitforAccetpors){
-                environment.send(acceptor, p2aBytes);
+                //de-register its message queue
+                environment.send(acceptor, p2a);
             }
 
-            while(true){
-                try {
+            try {
+               while(true){
                     //because of message handler, scout can only get p2b msg
                     P2b incMsg = incomingMessages.take().getP2B();
 
@@ -215,10 +313,9 @@ public class Leader extends Thread{
                                             .setSlotNum(pvalue.getSlotNum())
                                             .setC(pvalue.getCmd()))
                                     .build();
-                            byte[] outMsgBytes = outMsg.toByteArray();
 
                             for(int replica : environment.getReplicas()) {
-                                environment.send(replica, outMsgBytes);
+                                environment.send(replica, outMsg);
                             }
 
                             return;
@@ -231,9 +328,11 @@ public class Leader extends Thread{
                                 .build());
                         return;
                     }
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+               }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                messageQueues.remove(ThreadID.get());
             }
         }
     }
