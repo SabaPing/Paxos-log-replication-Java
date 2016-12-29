@@ -1,7 +1,5 @@
 package utilities;
 
-import paxos.PaxosMsgs;
-
 import java.util.List;
 
 /**

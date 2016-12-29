@@ -4,9 +4,9 @@ import utilities.Environment;
 
 import java.util.*;
 
-import paxos.PaxosMsgs.*;
+import utilities.PaxosMsgs.*;
 
-import static paxos.PaxosMsgs.Paxos.Type.*;
+import static utilities.PaxosMsgs.Paxos.Type.*;
 
 /**
  * If process is an acceptor, it only has a single thread.
@@ -65,7 +65,6 @@ public class Acceptor extends Thread {
                 case P2A: {
                     P2a body = message.getP2A();
                     if (new BallotComparator().compare(body.getPvalue().getBallot(), acceptorBallot) == 0)
-                        //assume protobuf library override equals() correctly!
                         accepted.add(body.getPvalue());
 
                     environment.send(body.getFromLeader(),

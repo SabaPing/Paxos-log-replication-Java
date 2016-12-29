@@ -1,6 +1,6 @@
 package paxos;
 
-import paxos.PaxosMsgs.*;
+import utilities.PaxosMsgs.*;
 import utilities.Environment;
 
 import java.util.*;
@@ -8,35 +8,35 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import static paxos.PaxosMsgs.Paxos.Type.*;
+import static utilities.PaxosMsgs.Paxos.Type.*;
 
 
 /**
- * todo design concurrent structure, check if thread safe
+ * The Leader class has two Paxos related inner classes, which are Scout and Commander.
+ * The leader is the main thread. Scouts and Commanders are launched by the leader.
+ * Use inner classes to simplify state sharing.
  *
- * todo need re-read all code
+ * Inter threads communication is done by message queues and MessageHandler thread.
+ * For one-to-one mapping between each thread and its message queue, each thread need a local id,
+ * Use ThreadLocal to implement thread local id.
  */
 public class Leader extends Thread{
-    private Ballot leaderBallot;
-    private boolean active;
 
+    //Paxos related states, no one is shared, thus thread safe.
+    private Ballot leaderBallot;
     private final Map<Integer, Command> proposals;
+    private final int ID;
+    private boolean active;
 
     //Message handler thread
     private final MessageHandler msgHandler;
 
-    //shared states, need thread-safe mechanism
+    //shared states for inter-threads communication, need thread-safe mechanism
     private final Map<Integer, BlockingQueue<Paxos>> messageQueues;
     private final BlockingQueue<Paxos> incomingMessages;
 
-    //this object provide sending function, network topology is stored here
+    //sending and receiving messages
     private final Environment environment;
-
-    private final int ID;
-
-    //This id is for distinguishing different message queues
-    //private final int localThreadID;
-    //to get local thread id, call ThreadID.get()!
 
     public Leader(int id, Environment environment) {
         ID = id;
@@ -49,17 +49,18 @@ public class Leader extends Thread{
         //to avoid this reference escape, don's start inner class thread in constructor
         msgHandler = new MessageHandler(ThreadID.get());
 
-        messageQueues = new ConcurrentHashMap<>();
-
         //initial and register message queue
-        this.incomingMessages = new ArrayBlockingQueue<Paxos>(100);
+        messageQueues = new ConcurrentHashMap<>();
+        this.incomingMessages = new ArrayBlockingQueue<>(100);
         messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
     }
 
     @Override
     public void run() {
-        //spawn an initial scout
-        new Scout(leaderBallot).start();
+        msgHandler.start();
+
+        //To ensure states is not shared, build a new ballot
+        new Scout(Ballot.newBuilder(leaderBallot).build()).start();
 
         try {
             while (true)
@@ -67,13 +68,11 @@ public class Leader extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            //leader never end. not necessary to de-register.
+            //leader never end. not necessary to de-register its message Q.
         }
-        //when return, cleanup.
     }
 
     /**
-     * todo concurrency
      * this method transit shared states, need careful concurrent design
      * @throws InterruptedException
      */
@@ -85,8 +84,11 @@ public class Leader extends Thread{
                 if (!proposals.containsKey(temp_propose.getSlotIn())){
                     proposals.put(temp_propose.getSlotIn(), temp_propose.getC());
                     if (active) {
-
-                        //spawn a Commander
+                        /**
+                         * spawn a Commander
+                         * have some concerns! Is protobuf really immutable???
+                         * Assume it is!
+                         */
                         new Commander(PValue.newBuilder()
                                 .setBallot(leaderBallot)
                                 .setSlotNum(temp_propose.getSlotIn())
@@ -98,7 +100,6 @@ public class Leader extends Thread{
             case ADOPTED: {
                 Adopted temp_adopted = incMsg.getAdopted();
                 if (leaderBallot.equals(temp_adopted.getBallot())){
-
                     /**
                      * updates the set of proposals, replacing for each slot number
                      * the command corresponding to the maximum pvalue in pvals, if any.
@@ -109,7 +110,6 @@ public class Leader extends Thread{
                                 new BallotComparator().compare(pmax.get(pv.getSlotNum()), pv.getBallot()) == -1)
                             proposals.put(pv.getSlotNum(), pv.getCmd());
                     }
-
                     for(Map.Entry<Integer, Command> entry : proposals.entrySet()) {
                         PValue temp_pv = PValue.newBuilder()
                                 .setBallot(leaderBallot)
@@ -118,10 +118,8 @@ public class Leader extends Thread{
                                 .build();
                         new Commander(temp_pv).start();
                     }
-
                     active = true;
                 }
-
             }
             case PREEMPTED: {
                 Preempted temp_preempted = incMsg.getPreempted();
@@ -131,15 +129,12 @@ public class Leader extends Thread{
                             .setPrefix(temp_preempted.getBallot().getPrefix() + 1)
                             .setConductor(ID)
                             .build();
-                    new Scout(leaderBallot).start();
+                    //ensure states are not shared
+                    new Scout(Ballot.newBuilder(leaderBallot).build()).start();
                 }
             }
         }
     }
-
-
-
-
 
     /**
      * 这里scouts由leader id + leaderBallot 唯一确定，commanders由leader+leaderBallot+slot唯一确定。
@@ -151,6 +146,10 @@ public class Leader extends Thread{
      */
     private class MessageHandler extends Thread{
 
+        /**
+         * message handler must know its leader's id.
+         * No need to know scouts and commanders, their IDs are in message body.
+         */
         private final int leadLocalId;
 
         public MessageHandler (int leadLocalId) {
@@ -194,12 +193,12 @@ public class Leader extends Thread{
      */
     private class Scout extends Thread{
 
-        //save pvalues from acceptors
+        //Paxos related states, must ensure not shared.
         private final Set<PValue> pValueSet;
-
-        private final BlockingQueue<Paxos> incomingMessages;
         private final Ballot scoutBallot;
         private final List<Integer> waitforAccetpors;
+
+        private final BlockingQueue<Paxos> incomingMessages;
 
         public Scout(Ballot ballot) {
             scoutBallot = ballot;
@@ -260,6 +259,7 @@ public class Leader extends Thread{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } finally {
+                //clean up, remove its message queue from map.
                 messageQueues.remove(ThreadID.get());
             }
         }
@@ -272,6 +272,7 @@ public class Leader extends Thread{
     private class Commander extends Thread{
         private final List<Integer> waitforAccetpors;
         private final PValue pvalue;
+
         private final BlockingQueue<Paxos> incomingMessages;
 
         public Commander(PValue pvalue) {
@@ -304,10 +305,8 @@ public class Leader extends Thread{
                     if(incMsg.getBallot().equals(pvalue.getBallot())){
                         //use Integer.valueOf to use internal cache
                         waitforAccetpors.remove(Integer.valueOf(incMsg.getFrom()));
-
                         if(waitforAccetpors.size() < environment.getAcceptors().size()/2){
-
-                            Paxos outMsg = Paxos.newBuilder()
+                            Paxos decisionToReplicas = Paxos.newBuilder()
                                     .setType(DECISION)
                                     .setDecision(Decision.newBuilder()
                                             .setSlotNum(pvalue.getSlotNum())
@@ -315,9 +314,8 @@ public class Leader extends Thread{
                                     .build();
 
                             for(int replica : environment.getReplicas()) {
-                                environment.send(replica, outMsg);
+                                environment.send(replica, decisionToReplicas);
                             }
-
                             return;
                         }
                     } else {

@@ -1,5 +1,7 @@
 package paxos;
 
+import utilities.PaxosMsgs;
+
 import java.util.Comparator;
 
 
