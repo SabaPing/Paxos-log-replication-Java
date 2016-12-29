@@ -1,4 +1,4 @@
-package paxos;
+package utilities;
 
 /**
  * Created by yifan on 12/19/16.

@@ -1,5 +1,6 @@
-package paxos;
+package paxos.synod;
 
+import utilities.BallotComparator;
 import utilities.PaxosMsgs.*;
 import utilities.Environment;
 

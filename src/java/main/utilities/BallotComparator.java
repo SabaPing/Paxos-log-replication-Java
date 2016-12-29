@@ -1,4 +1,4 @@
-package paxos;
+package utilities;
 
 import utilities.PaxosMsgs;
 
