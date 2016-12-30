@@ -11,7 +11,7 @@ Implementation of multi-paxos protocol.
 
 ## Understand Paxos protocol
 
-####Just read the papers:
+####Just read these papers:
 
 * The Part-Time Parliament, by Leslie Lamport
 * Paxos Made Simple, by Leslie Lamport
