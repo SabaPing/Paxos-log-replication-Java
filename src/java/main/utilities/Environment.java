@@ -3,7 +3,10 @@ package utilities;
 import java.util.List;
 
 /**
- * Not assume FIFO
+ * This interface provide network abstraction.
+ * Except for methods in this interface, the whole system know nothing about network.
+ *
+ * Not assume FIFO, only reliability.
  *
  * Classes implementing this interface store ID-address mappings,
  * which from the configuration file.

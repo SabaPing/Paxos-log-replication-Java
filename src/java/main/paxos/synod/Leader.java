@@ -20,6 +20,9 @@ import static utilities.PaxosMsgs.Paxos.Type.*;
  * Inter threads communication is done by message queues and MessageHandler thread.
  * For one-to-one mapping between each thread and its message queue, each thread need a local id,
  * Use ThreadLocal to implement thread local id.
+ *
+ * All threads are executed in an almost-asynchronous manner,
+ * the only very weak synchronized part are message queues.
  */
 public class Leader extends Thread{
 
@@ -121,6 +124,7 @@ public class Leader extends Thread{
                     }
                     active = true;
                 }
+                break;
             }
             case PREEMPTED: {
                 Preempted temp_preempted = incMsg.getPreempted();
@@ -133,6 +137,7 @@ public class Leader extends Thread{
                     //ensure states are not shared
                     new Scout(Ballot.newBuilder(leaderBallot).build()).start();
                 }
+                break;
             }
         }
     }
@@ -173,10 +178,12 @@ public class Leader extends Thread{
                         case P1B: {
                             int scoutId = message.getP1B().getToScout();
                             messageQueues.get(scoutId).put(message);
+                            break;
                         }
                         case P2B: {
                             int commanderId = message.getP2B().getToCommander();
                             messageQueues.get(commanderId).put(message);
+                            break;
                         }
                     }
                 }catch (InterruptedException e){
