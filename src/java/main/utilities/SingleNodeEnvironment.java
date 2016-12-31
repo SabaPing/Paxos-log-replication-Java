@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 
+import paxos.Replica;
+import paxos.synod.Acceptor;
+import paxos.synod.Leader;
 import utilities.PaxosMsgs.Paxos;
 
 /**
@@ -117,9 +118,39 @@ public class SingleNodeEnvironment implements Environment {
         return msg;
     }
 
-    //act as a pseudo-client
+    /**
+     * needs two args: config file and # of requests
+     * @param args
+     */
     public static void main(String[] args) {
         Environment env = new SingleNodeEnvironment (args[0]);
+        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+
+        //start all nodes
+        for (int i : env.getReplicas()) {
+            threadPool.submit(new Replica(i, env));
+        }
+        for (int i : env.getAcceptors()) {
+            threadPool.submit(new Acceptor(i, env));
+        }
+        for (int i : env.getLeaders()) {
+            threadPool.submit(new Leader(i, env));
+        }
+
+        //sending some requests, assume client id is 99
+        int numOfReq = Integer.parseInt(args[1]);
+        for (int i = 1; i <= numOfReq; i++) {
+            for (int r : env.getReplicas()) {
+                env.send(r, Paxos.newBuilder()
+                        .setType(Paxos.Type.REQUEST)
+                        .setRequest(PaxosMsgs.Request.newBuilder()
+                                .setC(PaxosMsgs.Command.newBuilder()
+                                        .setClient(99)
+                                        .setCid(i)
+                                        .setOperation("Request # " + i)))
+                        .build());
+            }
+        }
     }
 
 }

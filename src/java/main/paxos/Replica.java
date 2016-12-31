@@ -89,19 +89,22 @@ public class Replica extends Thread {
         System.out.println("Replica " + ID + ": perform slot " + slot_out + " command " + cmd.getOperation());
         slot_out++;
 
-        Paxos temp_response = Paxos.newBuilder()
-                .setType(RESPONSE)
-                .setResponse(Response.newBuilder()
-                        .setCid(cmd.getCid())
-                        .setResult("Performed"))
-                .build();
-
-        environment.send(cmd.getClient(), temp_response);
+        /**
+         * for debugging and simplicity, no client here
+         */
+//        Paxos temp_response = Paxos.newBuilder()
+//                .setType(RESPONSE)
+//                .setResponse(Response.newBuilder()
+//                        .setCid(cmd.getCid())
+//                        .setResult("Performed"))
+//                .build();
+//
+//        environment.send(cmd.getClient(), temp_response);
     }
 
     public void run() {
         while (true) {
-            Paxos incMsg = environment.receive();
+            Paxos incMsg = environment.receive(ID);
             switch (incMsg.getType()) {
                 case REQUEST:{
                     requests.offer(incMsg.getRequest().getC());
