@@ -167,7 +167,7 @@ public class Leader extends Thread{
             while(true) {
 
                 //This statement will be blocked if there is no incoming message.
-                Paxos message = environment.receive();
+                Paxos message = environment.receive(ID);
 
                 try {
                     switch (message.getType()) {

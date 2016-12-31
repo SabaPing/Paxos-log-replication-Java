@@ -9,14 +9,12 @@ import java.util.List;
  * Not assume FIFO, only reliability.
  *
  * Classes implementing this interface store ID-address mappings,
- * which from the configuration file.
+ * which from the config file.
  *
  * Message boundary design -- 1 byte length
  *
  */
 public interface Environment {
-
-    public List<Integer> getClients();
 
     public List<Integer> getReplicas();
 
@@ -26,6 +24,6 @@ public interface Environment {
 
     public void send(int toID, PaxosMsgs.Paxos msg);
 
-    public PaxosMsgs.Paxos receive();
+    public PaxosMsgs.Paxos receive(int id);
 
 }

@@ -37,7 +37,7 @@ public class Acceptor extends Thread {
     public void run() {
         while (true) {
             //For each message received, do something
-            Paxos message = environment.receive();
+            Paxos message = environment.receive(ID);
 
             //Acceptor can receive two types of messages
             switch (message.getType()) {
