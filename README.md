@@ -41,6 +41,7 @@ An excellent must-read book -- Distributed Algorithms, by Nancy A. Lynch
 
 ## Understand the code
 
-Here is the class diagram of the whole project:
+Here is the class diagram of key classed in the project:
+![class diagram](https://github.com/BBQyuki/Paxos-log-replication-Java/blob/master/class-diagram-1.png)
 
 
