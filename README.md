@@ -44,4 +44,14 @@ An excellent must-read book -- Distributed Algorithms, by Nancy A. Lynch
 Here is the class diagram of key classed in the project:
 ![class diagram](https://github.com/BBQyuki/Paxos-log-replication-Java/blob/master/class-diagram-1.png)
 
+#### Some explanation
 
+* Replica, Leader and Acceptor are three key roles in Paxos protocol.
+
+* Do not confuse with 'Leader' here. The Leader in Paxos is the conductor of each ballot. You may think what is the difference between Leader here and Leader in Raft or Viewstamp.
+Leader in Raft or Viewstamp is more like the "prime" leader of all leaders in Paxos -- Raft and Viewstamp do a leader election. In Paxos, every leader can propose, while in Raft and Viewstamp, only the selected 'prime' leader can propose.
+
+* Scout and Commander are two helping roles in Leader. Scout is for phase 1 of protocol and Command for phase 2. They are designed as inner classes in Leader for simplicity.
+
+
+##### For more infomation, pls see comments in code.
