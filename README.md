@@ -41,3 +41,6 @@ An excellent must-read book -- Distributed Algorithms, by Nancy A. Lynch
 
 ## Understand the code
 
+Here is the class diagram of the whole project:
+
+
