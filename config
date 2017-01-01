@@ -4,28 +4,20 @@
 * and every leader has bidirectional channel to every acceptor.
 
 * a pair of ip address and port# uniquely defines a role.
-* below define all roles, for system with f <= 3. A role is assigned to a host as:
+* below define all roles, for system with f <= 1. A role is assigned to a host as:
 
 * Format:Role ID
 
 * replicas
 R 1
 R 2
-R 3
-R 4
 
 * leaders
 L 5
 L 6
-L 7
-L 8
 
 * acceptors
 A 9
 A 10
 A 11
-A 12
-A 13
-A 14
-A 15
 
