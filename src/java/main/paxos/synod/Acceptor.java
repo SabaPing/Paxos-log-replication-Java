@@ -24,6 +24,7 @@ public class Acceptor extends Thread {
 
     //Initial states
     public Acceptor(int id, Environment environment) {
+        super("Acceptor-" + id);
         acceptorBallot = Ballot.newBuilder()
                 .setPrefix(0)
                 .setConductor(0)
@@ -46,7 +47,7 @@ public class Acceptor extends Thread {
                     P1a body = message.getP1A();
 
                     //if received ballot is larger than acceptor's ballot
-                    if (new BallotComparator().compare(body.getBallot(), acceptorBallot) == 1)
+                    if (new BallotComparator().compare(body.getBallot(), acceptorBallot) > 0)
                         acceptorBallot = body.getBallot();
 
                     // reply to the scout

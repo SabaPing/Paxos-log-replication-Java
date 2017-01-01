@@ -35,6 +35,7 @@ public class Replica extends Thread {
     private final Environment environment;
 
     public Replica(int ID, Environment environment) {
+        super("Replica-" + ID);
         this.ID = ID;
         this.environment = environment;
         this.decisions = new HashMap<>();

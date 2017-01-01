@@ -40,7 +40,7 @@ public class SingleNodeEnvironment implements Environment {
         buildMsgQueue();
     }
 
-    private void parseConfig (String filePath) {
+    private void parseConfig(String filePath) {
         Path config = Paths.get(filePath);
         try (Scanner sc = new Scanner(Files.newBufferedReader(config))) {
             while (sc.hasNextLine()) {
@@ -70,7 +70,7 @@ public class SingleNodeEnvironment implements Environment {
         }
     }
 
-    private void buildMsgQueue () {
+    private void buildMsgQueue() {
         for (int i : replicas) {
             msgQueueMap.put(i, new ArrayBlockingQueue<>(100));
         }
@@ -111,7 +111,7 @@ public class SingleNodeEnvironment implements Environment {
         //todo null is bad, need to define a default Paxos msg
         Paxos msg = null;
         try {
-            msgQueueMap.get(who).take();
+            msg = msgQueueMap.get(who).take();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -120,35 +120,45 @@ public class SingleNodeEnvironment implements Environment {
 
     /**
      * needs two args: config file and # of requests
+     *
      * @param args
      */
     public static void main(String[] args) {
-        Environment env = new SingleNodeEnvironment (args[0]);
-        ExecutorService threadPool = Executors.newFixedThreadPool(5);
+        Environment env = new SingleNodeEnvironment(args[0]);
+
+        //here, using fixedThreadPool is wrong. Need an unbound pool.
+//        ExecutorService threadPool = Executors.newCachedThreadPool();
 
         //start all nodes
         for (int i : env.getReplicas()) {
-            threadPool.submit(new Replica(i, env));
+            new Replica(i, env).start();
         }
         for (int i : env.getAcceptors()) {
-            threadPool.submit(new Acceptor(i, env));
+            new Acceptor(i, env).start();
         }
         for (int i : env.getLeaders()) {
-            threadPool.submit(new Leader(i, env));
+            new Leader(i, env).start();
         }
 
         //sending some requests, assume client id is 99
         int numOfReq = Integer.parseInt(args[1]);
         for (int i = 1; i <= numOfReq; i++) {
+            Paxos tempMsg = Paxos.newBuilder()
+                    .setType(Paxos.Type.REQUEST)
+                    .setRequest(PaxosMsgs.Request.newBuilder()
+                            .setC(PaxosMsgs.Command.newBuilder()
+                                    .setClient(99)
+                                    .setCid(i)
+                                    .setOperation("Request # " + i)))
+                    .build();
             for (int r : env.getReplicas()) {
-                env.send(r, Paxos.newBuilder()
-                        .setType(Paxos.Type.REQUEST)
-                        .setRequest(PaxosMsgs.Request.newBuilder()
-                                .setC(PaxosMsgs.Command.newBuilder()
-                                        .setClient(99)
-                                        .setCid(i)
-                                        .setOperation("Request # " + i)))
-                        .build());
+                env.send(r, tempMsg);
+            }
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

@@ -32,9 +32,6 @@ public class Leader extends Thread{
     private final int ID;
     private boolean active;
 
-    //Message handler thread
-    private final MessageHandler msgHandler;
-
     //shared states for inter-threads communication, need thread-safe mechanism
     private final Map<Integer, BlockingQueue<Paxos>> messageQueues;
     private final BlockingQueue<Paxos> incomingMessages;
@@ -43,6 +40,7 @@ public class Leader extends Thread{
     private final Environment environment;
 
     public Leader(int id, Environment environment) {
+        super("Leader-" + id);
         ID = id;
         leaderBallot = Ballot.newBuilder().setPrefix(0).setConductor(id).build();
         active = false;
@@ -50,18 +48,15 @@ public class Leader extends Thread{
 
         this.environment = environment;
 
-        //to avoid this reference escape, don's start inner class thread in constructor
-        msgHandler = new MessageHandler(ThreadID.get());
-
         //initial and register message queue
         messageQueues = new ConcurrentHashMap<>();
         this.incomingMessages = new ArrayBlockingQueue<>(100);
-        messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
     }
 
     @Override
     public void run() {
-        msgHandler.start();
+        new MessageHandler(ThreadID.get()).start();
+        messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
 
         //To ensure states is not shared, build a new ballot
         new Scout(Ballot.newBuilder(leaderBallot).build()).start();
@@ -111,7 +106,7 @@ public class Leader extends Thread{
                     Map<Integer, Ballot> pmax = new HashMap<>();
                     for(PValue pv : temp_adopted.getPvalues().getPvalueList()){
                         if(!pmax.containsKey(pv.getSlotNum()) ||
-                                new BallotComparator().compare(pmax.get(pv.getSlotNum()), pv.getBallot()) == -1)
+                                new BallotComparator().compare(pmax.get(pv.getSlotNum()), pv.getBallot()) < 0)
                             proposals.put(pv.getSlotNum(), pv.getCmd());
                     }
                     for(Map.Entry<Integer, Command> entry : proposals.entrySet()) {
@@ -128,7 +123,7 @@ public class Leader extends Thread{
             }
             case PREEMPTED: {
                 Preempted temp_preempted = incMsg.getPreempted();
-                if (new BallotComparator().compare(temp_preempted.getBallot(), leaderBallot) == 1) {
+                if (new BallotComparator().compare(temp_preempted.getBallot(), leaderBallot) > 0) {
                     active = false;
                     leaderBallot = Ballot.newBuilder()
                             .setPrefix(temp_preempted.getBallot().getPrefix() + 1)
@@ -159,6 +154,7 @@ public class Leader extends Thread{
         private final int leadLocalId;
 
         public MessageHandler (int leadLocalId) {
+            super("MessageHandler");
             this.leadLocalId = leadLocalId;
         }
 
@@ -209,15 +205,18 @@ public class Leader extends Thread{
         private final BlockingQueue<Paxos> incomingMessages;
 
         public Scout(Ballot ballot) {
+            super("Scout in " + ID + " with Ballot " + ballot);
             scoutBallot = ballot;
             pValueSet = new HashSet<>();
             this.incomingMessages = new ArrayBlockingQueue<>(100);
-            messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
+
+            //fuck you ThreadLocal, in
             waitforAccetpors = new ArrayList<>(environment.getAcceptors());
         }
 
         @Override
         public void run() {
+            messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
 
             Paxos p1a = Paxos.newBuilder()
                     .setType(P1A)
@@ -284,14 +283,15 @@ public class Leader extends Thread{
         private final BlockingQueue<Paxos> incomingMessages;
 
         public Commander(PValue pvalue) {
+            super("Commander in " + ID + " with pvalue " + pvalue);
             this.pvalue = pvalue;
             waitforAccetpors = new ArrayList<>(environment.getAcceptors());
             incomingMessages = new ArrayBlockingQueue<>(100);
-            messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
         }
 
         @Override
         public void run() {
+            messageQueues.putIfAbsent(ThreadID.get(), this.incomingMessages);
             Paxos p2a = Paxos.newBuilder()
                     .setType(P2A)
                     .setP2A(P2a.newBuilder()
@@ -343,7 +343,11 @@ public class Leader extends Thread{
         }
     }
 
-
+    /**
+     * really got fucked when call threadlocal get in Thread's constructor.
+     * The value returned by get() is not for this thread, but for the thread who call the constructor.
+     * Target thread has not stared when its constructor is being called.
+     */
     public static class ThreadID {
         private static final AtomicInteger nextID = new AtomicInteger(0);
 
