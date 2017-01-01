@@ -9,13 +9,13 @@ Implementation of multi-paxos protocol.
 #### How to build?
 
 I use Intellij to manage my project. To build project, just
-import project to idea, add google-protobuf library, then build.
+import project to Intellij, don't forget to add google-protobuf library, then build.
 
 #### How to run?
 
-* First, in config file, decide the system topology(how many leaders, replicas and acceptors in the system).
+* First, in "config" file, decide the system topology(how many leaders, replicas and acceptors in the system).
 
-* The main method is in utilities.SingleNodeEnvironment. And it accepts two args: the first is config file path, and the second is the number of requests(RSM commands) that need to be decided by Paxos protocol.
+* The main method is in utilities.SingleNodeEnvironment. It accepts two args: the first is config file path, and the second is the number of requests(RSM commands) that need to be decided by Paxos protocol.
 
 * Run the program, you will see the result in console.
 
