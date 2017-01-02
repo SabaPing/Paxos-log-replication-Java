@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/src/java/Paxos-log-replication.iml" filepath="$PROJECT_DIR$/src/java/Paxos-log-replication.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/java/Paxos-log-replication-Java.iml" filepath="$PROJECT_DIR$/src/java/Paxos-log-replication-Java.iml" />
     </modules>
   </component>
 </project>

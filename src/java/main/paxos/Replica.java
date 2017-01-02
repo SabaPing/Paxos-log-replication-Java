@@ -2,7 +2,9 @@ package paxos;
 
 import utilities.Environment;
 import utilities.PaxosMsgs.*;
+
 import static utilities.PaxosMsgs.Paxos.Type.*;
+
 import java.util.*;
 
 /**
@@ -14,16 +16,16 @@ import java.util.*;
  * in order of slot number.
  * R4: For each ρ, the variable ρ.slot out cannot decrease over time.
  * R5: A replica proposes commands only for slots for which it knows the configuration.
- *
+ * <p>
  * And R1 is ensured by synod(i.e., simple paxos)
- *
+ * <p>
  * Did not implement reconfig function!!!
  */
 public class Replica extends Thread {
     //paxos related thread
-    private  int slot_in;
-    private  int slot_out;
-    private final Queue<Command>  requests;
+    private int slot_in;
+    private int slot_out;
+    private final Queue<Command> requests;
     private final Map<Integer, Command> proposals;
     private final Map<Integer, Command> decisions;
     private final int ID;
@@ -51,8 +53,8 @@ public class Replica extends Thread {
     /**
      * Transfer requests from requests to proposals
      */
-    private void propose () {
-        while((slot_in < slot_out + WINDOW) && !requests.isEmpty()) {
+    private void propose() {
+        while ((slot_in < slot_out + WINDOW) && !requests.isEmpty()) {
             //if not already proposed for slot_in
             if (!decisions.containsKey(slot_in)) {
                 Command polledCmd = requests.poll();
@@ -78,10 +80,10 @@ public class Replica extends Thread {
      * Different replicas may end up proposing the same command for different slots,
      * and thus the same command may be decided multiple times.
      */
-    private void perform (Command cmd) {
+    private void perform(Command cmd) {
         //if it has already performed the command
         for (int i = 1; i < slot_out; i++) {
-            if (decisions.get(i).equals(cmd)){
+            if (decisions.get(i).equals(cmd)) {
                 slot_out++;
                 return;
             }
@@ -107,7 +109,7 @@ public class Replica extends Thread {
         while (true) {
             Paxos incMsg = environment.receive(ID);
             switch (incMsg.getType()) {
-                case REQUEST:{
+                case REQUEST: {
                     requests.offer(incMsg.getRequest().getC());
                     break;
                 }
@@ -115,23 +117,25 @@ public class Replica extends Thread {
                 /**
                  * Decisions may arrive out of order and multiple times
                  */
-                case DECISION:{
+                case DECISION: {
                     //adds the decision to the set decisions
                     Decision body = incMsg.getDecision();
                     decisions.put(body.getSlotNum(), body.getC());
 
                     /**
-                     * first try to run decisions that are ready for execution
-                     * before trying to receive more messages
+                     * If there is a decision c′ corresponding to the current slot out,
+                     * the replica first checks to see if it has proposed a command c′′ for that slot.
+                     * If so, the replica removes ⟨slot out,c′′⟩ from the set proposals.
+                     * If c′′ ̸= c′, the replica returns c′′ to set requests
                      */
-                    for (Map.Entry<Integer, Command> entry : decisions.entrySet()) {
-                        if (proposals.containsKey(entry.getKey())) {
-                            Command temp_cmd = proposals.remove(entry.getKey());
-                            if (!temp_cmd.equals(entry.getValue())) {
-                                requests.offer(temp_cmd);
+                    while (decisions.containsKey(slot_out)) {
+                        if (proposals.containsKey(slot_out)) {
+                            if (!proposals.get(slot_out).equals(decisions.get(slot_out))) {
+                                requests.offer(proposals.get(slot_out));
                             }
+                            proposals.remove(slot_out);
                         }
-                        perform(entry.getValue());
+                        perform(decisions.get(slot_out));
                     }
                 }
             }

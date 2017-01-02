@@ -1,0 +1,121 @@
+syntax = "proto2";
+package paxos;
+
+option java_outer_classname = "PaxosMsgs";
+
+//wrapper. Add a protocol header to every message
+message Paxos {
+    enum Type {
+        P1A = 1;
+        P1B = 2;
+        P2A = 3;
+        P2B = 4;
+
+        REQUEST = 5;
+        RESPONSE = 6;
+
+        PROPOSE = 7;
+        DECISION = 8;
+
+        ADOPTED = 9;
+        PREEMPTED = 10;
+    }
+
+    required Type type = 1;
+
+    optional P1a p1a = 2;
+    optional P1b p1b = 3;
+    optional P2a p2a = 4;
+    optional P2b p2b = 5;
+    optional Request request = 6;
+    optional Response response = 7;
+    optional Propose propose = 8;
+    optional Decision decision = 9;
+    optional Adopted adopted = 10;
+    optional Preempted preempted = 11;
+}
+
+//message in synod
+message P1a {
+    required int32 fromLeader = 1;
+    required int32 fromScout = 2;
+    required Ballot ballot = 3;
+}
+
+message P1b {
+    required int32 from = 1;
+    required int32 toScout = 2;
+    required Ballot ballot = 3;
+    required Accepted accepted = 4;
+}
+
+message P2a {
+    required int32 fromLeader = 1;
+    required int32 fromCommander = 2;
+    required PValue pvalue = 3;
+}
+
+message P2b {
+    required int32 from = 1;
+    required int32 toCommander = 2;
+    required Ballot ballot = 3;
+}
+
+//message between replicas and clients
+message Request {
+    required Command c = 1;
+}
+
+message Response {
+    required int32 cid = 1;
+    required string result = 2;
+}
+
+//messages between replicas and synod
+message Propose {
+    required int32 slot_in = 1;
+    required Command c = 2;
+}
+
+message Decision {
+    required int32 slotNum = 1;
+    required Command c = 2;
+}
+
+//messages for IPC in leader
+message Adopted {
+    required Ballot ballot = 1;
+    required Accepted pvalues = 2;
+}
+
+message Preempted {
+    required Ballot ballot = 1;
+}
+
+
+
+
+
+//helper structure
+message Ballot {
+    required int32 prefix = 1;
+    required int32 conductor = 2;
+
+}
+
+message PValue {
+    required Ballot ballot = 1;
+    required int32 slotNum = 2;
+    required Command cmd = 3;
+
+}
+
+message Accepted {
+    repeated PValue pvalue = 1;
+}
+
+message Command {
+    required int32 client = 1;
+    required int32 cid = 2;
+    required string operation = 3;
+}

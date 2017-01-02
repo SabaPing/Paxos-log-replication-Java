@@ -173,11 +173,13 @@ public class Leader extends Thread{
                         }
                         case P1B: {
                             int scoutId = message.getP1B().getToScout();
+                            if (!messageQueues.containsKey(scoutId)) break;
                             messageQueues.get(scoutId).put(message);
                             break;
                         }
                         case P2B: {
                             int commanderId = message.getP2B().getToCommander();
+                            if (!messageQueues.containsKey(commanderId)) break;
                             messageQueues.get(commanderId).put(message);
                             break;
                         }
